@@ -1,0 +1,47 @@
+name: Build k8s-alpine-baseimage
+
+env:
+  DOCKER_OWNER: "nforceroh"
+  HARBOR_PROJECT: "homelab"
+
+on:
+  push:
+
+jobs:
+  deploy-docker-image:
+    runs-on: arc-k8s-pyzor
+    steps:
+      - name: Get repo name
+        run: |
+          echo "${{ github.repository }}" | cut -d "/" -f 2 > repo.txt
+          echo "REPO_NAME=$(cat repo.txt)" >> $GITHUB_ENV
+          rm -rf repo.txt
+
+      - run: echo "Starting build for ${{ env.REPO_NAME }}"
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set build date
+        id: date
+        run: echo "::set-output name=builddate::$(date +'%Y%m%d%H%M%S')"
+
+      - run: echo "Prep login to ${{ secrets.HARBOR_USERNAME}}:${{ secrets.HARBOR_PASSWORD }}@harbor.nf.lab."
+
+      - name: Login to image repository
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.HARBOR_URL }}
+          username: ${{ secrets.HARBOR_USERNAME}}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: |
+            ${{ secrets.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/${{ env.IMGNAME }}:${{ steps.date.outputs.builddate }}
+            ${{ secrets.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/${{ env.IMGNAME }}:latest
+          build-args: |
+            BUILD_DATE=${{ steps.date.outputs.builddate }}
+            VERSION=${{ steps.date.outputs.builddate }}
