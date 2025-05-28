@@ -28,7 +28,7 @@ jobs:
 
       - name: Add Harbor registry CA certificate
         run: |
-          sudo curl -L https://github.com/nforceroh/homelab/raw/main/nf.lab-root.ca -o /usr/local/share/ca-certificates/ca.crt
+          sudo curl -L https://github.com/nforceroh/homelab/raw/main/nf.lab-root.ca -o /usr/local/share/ca-certificates/nf.lab.ca.crt
           sudo update-ca-certificates
       - run: echo "Prep login to ${{ secrets.HARBOR_USERNAME}}:${{ secrets.HARBOR_PASSWORD }}@harbor.nf.lab."
 
