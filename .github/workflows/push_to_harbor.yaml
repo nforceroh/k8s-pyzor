@@ -26,6 +26,15 @@ jobs:
         id: date
         run: echo "::set-output name=builddate::$(date +'%Y%m%d%H%M%S')"
 
+      - name: Add Harbor registry CA certificate
+        run: |
+          mkdir -p /etc/docker/certs.d/harbor.nf.lab
+          curl -L https://github.com/nforceroh/homelab/raw/main/nf.lab-root.ca -o /etc/docker/certs.d/harbor.nf.lab/ca.crt
+      - name: Restart Docker
+        run: |
+          sudo systemctl restart docker
+          sleep 5
+          
       - run: echo "Prep login to ${{ secrets.HARBOR_USERNAME}}:${{ secrets.HARBOR_PASSWORD }}@harbor.nf.lab."
 
       - name: Login to image repository
