@@ -1,7 +1,0 @@
-#!/command/with-contenv sh
-
-echo ''
-echo "\$RAZORFY_DEBUG      = $RAZORFY_DEBUG"
-echo "\$RAZORFY_BINDPORT   = $RAZORFY_BINDPORT"
-echo "\$RAZORFY_MAXTHREADS = $RAZORFY_MAXTHREADS"
-echo

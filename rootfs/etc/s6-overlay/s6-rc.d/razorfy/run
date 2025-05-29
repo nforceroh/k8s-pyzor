@@ -1,2 +1,0 @@
-#!/command/execlineb -P
-exec s6-setuidgid abc /app/razorfy.pl
