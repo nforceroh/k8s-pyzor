@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 SHELL := /bin/bash
-IMG_NAME := razor
+IMG_NAME := pyzor
 IMG_REPO := nforceroh
 IMG_NS := homelab
 IMG_REG := harbor.k3s.nf.lab
@@ -9,7 +9,7 @@ DATE_VERSION := $(shell date +"v%Y%m%d%H%M" )
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DOCKERCMD := docker
 
-ifeq ($(BRANCH),dev)
+ifeq ($(BRANCH),main)
 	VERSION := dev
 else
 	VERSION := $(BRANCH)
@@ -27,7 +27,6 @@ build:
 	$(DOCKERCMD) build \
 		--build-arg BUILD_DATE="$(BUILD_DATE)" \
 		--build-arg VERSION="$(VERSION)" \
-		--build-arg BASE_IMAGE="docker.io/nforceroh/k8s-alpine-baseimage:latest" \
 		--tag $(IMG_REPO)/$(IMG_NAME) .
 
 gitcommit:

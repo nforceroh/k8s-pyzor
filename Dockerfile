@@ -1,4 +1,4 @@
-FROM docker.io/nforceroh/k8s-alpine-baseimage:latest
+FROM ghcr.io/nforceroh/k8s-alpine-baseimage:latest
 
 ARG \
   BUILD_DATE=now \
@@ -7,28 +7,22 @@ ARG \
 LABEL \
   maintainer="Sylvain Martin (sylvain@nforcer.com)"
 
-ENV \
-  RAZORFY_DEBUG=0 \
-  RAZORFY_MAXTHREADS=200 \
-  RAZORFY_BINDADDRESS=127.0.0.1 \
-  RAZORFY_BINDPORT=11342 
-
 ### Install Dependencies
-RUN apk upgrade --no-cache \
-  && apk add --no-cache razor perl-io-socket-ip \
+RUN \
+  echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+  && apk add --no-cache py3-pip redis \
+  && pip install --upgrade pyzor --break-system-packages \
+  && pip install --upgrade redis --break-system-packages \
+  && addgroup pyzor 2>/dev/null \
+  && adduser -D --gecos "pyzor antispam" --ingroup pyzor pyzor 2>/dev/null \
+  && mkdir /home/pyzor/.pyzor && chown pyzor:pyzor /home/pyzor/.pyzor \
   && rm -rf /var/cache/apk/* /usr/src/*
 
 ### Add Files
-ADD rootfs /
-ADD https://raw.githubusercontent.com/HeinleinSupport/razorfy/refs/heads/master/razorfy.pl /app/razorfy.pl
-ADD https://raw.githubusercontent.com/HeinleinSupport/razorfy/refs/heads/master/razorfy.conf /app/razorfy.conf
+ADD --chmod=755 /content/etc/s6-overlay /etc/s6-overlay
+ADD --chown=pyzor:pyzor --chmod=644 /content/conf/* /home/pyzor/.pyzor
+ADD --chmod=755 /content/usr/local/bin/* /usr/local/bin/
 
-
-RUN find /etc/s6-overlay/s6-rc.d -name run -exec chmod 755 {} \; \
-  && chmod 755 /etc/cont-init.d/* \
-  && chmod 755 /app/razorfy.pl \
-  && chmod 644 /app/razorfy.conf
-
-EXPOSE 11342
+EXPOSE 24441
 
 ENTRYPOINT [ "/init" ]

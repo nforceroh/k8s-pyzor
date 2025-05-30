@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+REDIS_SERVER=${REDIS_SERVER:-redis}
+REDIS_DB=${REDIS_DB:-5}
+REDIS_PORT=${REDIS_PORT:-6379}
+REDIS_PASSWORD=${REDIS_PASSWORD:-""}
+LOGS_DIR=${LOGS_DIR:-/data/logs}
+
+if [ ! -d $LOGS_DIR ]; then
+    mkdir -p $LOGS_DIR
+fi
+for FILE in log.log usage.log; do
+    touch $LOGS_DIR/$FILE
+    chmod 666 $LOGS_DIR/$FILE
+done
+
+CONNECT_STRING="${REDIS_SERVER},${REDIS_PORT},${REDIS_PASSWORD},${REDIS_DB}"
+sed -i "s/^DigestDB.*/DigestDB = ${CONNECT_STRING}/g" /home/pyzor/.pyzor/config
+
+echo "DigestDB set to ${CONNECT_STRING}"
+grep "^DigestDB" /home/pyzor/.pyzor/config 
