@@ -13,6 +13,7 @@ fi
 for FILE in log.log usage.log; do
     touch $LOGS_DIR/$FILE
     chmod 666 $LOGS_DIR/$FILE
+    chown pyzor:pyzor $LOGS_DIR/$FILE
 done
 
 CONNECT_STRING="${REDIS_SERVER},${REDIS_PORT},${REDIS_PASSWORD},${REDIS_DB}"
