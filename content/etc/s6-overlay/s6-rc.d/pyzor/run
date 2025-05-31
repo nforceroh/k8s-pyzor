@@ -1,4 +1,9 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
-exec s6-setuidgid pyzor pyzord --homedir /home/pyzor/.pyzor 
+PYZOR_DEBUG_ARG=""
+if [[ "${PYZOR_DEBUG^^}" == T* || "${PYZOR_DEBUG}" == 1* ]]; then
+  PYZOR_DEBUG_ARG="--debug"
+fi
+
+exec s6-setuidgid pyzor pyzord --homedir /home/pyzor/.pyzor ${PYZOR_DEBUG_ARG}
