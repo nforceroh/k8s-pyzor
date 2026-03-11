@@ -1,11 +1,16 @@
-FROM ghcr.io/nforceroh/k8s-alpine-baseimage:latest
+FROM ghcr.io/nforceroh/k8s-alpine-baseimage:3.23
 
 ARG \
-  BUILD_DATE=now \
+  BUILD_DATE=unknown \
   VERSION=unknown
 
 LABEL \
-  maintainer="Sylvain Martin (sylvain@nforcer.com)"
+  org.label-schema.maintainer="Sylvain Martin (sylvain@nforcer.com)" \
+  org.label-schema.build-date="${BUILD_DATE}" \
+  org.label-schema.version="${VERSION}" \
+  org.label-schema.vcs-url="https://github.com/nforcer/k8s-postfix" \
+  org.label-schema.schema-version="1.0"
+
 
 ### Install Dependencies
 RUN \
