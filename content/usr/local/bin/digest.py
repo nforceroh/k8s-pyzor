@@ -181,4 +181,3 @@ class PrintingDataDigester(DataDigester):
         print(line)
         # print(line.decode("utf8"))
         super(PrintingDataDigester, self).handle_line(line)
-        

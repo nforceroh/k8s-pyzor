@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+PYZOR_PORT=${PYZOR_PORT:-}
+PYZOR_SERVER=${PYZOR_SERVER:-}
+
+if [ "${PYZOR_SERVER}" != "" ]; then
+    mkdir -p /home/pyzor/.pyzor
+    chown pyzor:pyzor /home/pyzor/.pyzor
+    echo "${PYZOR_SERVER}:${PYZOR_PORT}" > /home/pyzor/.pyzor/servers
+fi
